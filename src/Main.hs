@@ -1,5 +1,6 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ViewPatterns #-}
 
 import Types
 import Control.Lens
@@ -7,15 +8,15 @@ import qualified Data.Text as T
 import Criterion
 import Criterion.Main
 
-colorOfPickup :: Lens' GuitarElectronics Pickup -> Lens' Appointment T.Text
+colorOfPickup :: Lens' GuitarElectronics Pickup -> Lens' Notification T.Text
 colorOfPickup pickupL =
-    app_notificationL . not_deliveredToL . md_ownerL . p_guitarL . g_bodyL .
+    not_deliveredToL . md_ownerL . p_guitarL . g_bodyL .
     gb_electronicsL . pickupL . p_coverL . pc_colorL
 
-colorOfPickupDirect :: (GuitarElectronics -> Pickup) -> Appointment -> T.Text
+colorOfPickupDirect :: (GuitarElectronics -> Pickup) -> Notification -> T.Text
 colorOfPickupDirect pickup =
     pc_color . p_cover . pickup . gb_electronics . g_body . p_guitar . md_owner .
-    not_deliveredTo . app_notification
+    not_deliveredTo
 
 sampleAppointment :: Appointment
 sampleAppointment =
@@ -64,21 +65,21 @@ loadAppointment = do
   let !app = read appStr
   return app
 
-benchmarkGetLens :: Appointment -> [T.Text]
+benchmarkGetLens :: Notification -> [T.Text]
 benchmarkGetLens app =
     [ app ^. (colorOfPickup ge_frontPickupL)
     , app ^. (colorOfPickup ge_rearPickupL)
     , app ^. (colorOfPickup ge_middlePickupL)
     ]
 
-benchmarkSetLens :: Appointment -> ()
+benchmarkSetLens :: Notification -> ()
 benchmarkSetLens app =
     (colorOfPickup ge_frontPickupL .~ "value01") app `seq`
     (colorOfPickup ge_rearPickupL .~ "value02") app `seq`
     (colorOfPickup ge_middlePickupL .~ "value03") app `seq`
     ()
 
-benchmarkGetDirect :: Appointment -> [T.Text]
+benchmarkGetDirect :: Notification -> [T.Text]
 benchmarkGetDirect app =
     [ colorOfPickupDirect ge_frontPickup app
     , colorOfPickupDirect ge_rearPickup app
@@ -86,13 +87,13 @@ benchmarkGetDirect app =
     ]
 
 setPickupColor ::
-    Appointment
+    Notification
     -> (GuitarElectronics -> Pickup)
     -> (GuitarElectronics -> Pickup -> GuitarElectronics)
     -> T.Text
-    -> Appointment
-setPickupColor app getPickup setPickup color =
-    app { app_notification = f1 (app_notification app) }
+    -> Notification
+setPickupColor not getPickup setPickup color =
+    f1 not
   where
     f1 not =
         not { not_deliveredTo = f2 (not_deliveredTo not) }
@@ -111,7 +112,7 @@ setPickupColor app getPickup setPickup color =
     f8 pc =
         pc { pc_color = color }
 
-benchmarkSetDirect :: Appointment -> ()
+benchmarkSetDirect :: Notification -> ()
 benchmarkSetDirect app =
     setPickupColor app ge_frontPickup (\e p -> e { ge_frontPickup = p }) "value01" `seq`
     setPickupColor app ge_rearPickup (\e p -> e { ge_rearPickup = p }) "value02" `seq`
@@ -123,12 +124,12 @@ main = do
   writeFile "data.txt" (show sampleAppointment)
   defaultMain
       [
-       env loadAppointment $ \app ->
+       env loadAppointment $ \(app_notification -> not) ->
            bgroup "main"
                [
-                 bench "getLens" (nf benchmarkGetLens app)
-               , bench "setLens" (nf benchmarkSetLens app)
-               , bench "getDirect" (nf benchmarkGetDirect app)
-               , bench "setDirect" (nf benchmarkSetDirect app)
+                 bench "getLens" (nf benchmarkGetLens not)
+               , bench "setLens" (nf benchmarkSetLens not)
+               , bench "getDirect" (nf benchmarkGetDirect not)
+               , bench "setDirect" (nf benchmarkSetDirect not)
                ]
       ]

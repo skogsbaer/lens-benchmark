@@ -9,53 +9,62 @@ import LensUtil
 import Control.DeepSeq
 import GHC.Generics
 
-data MusicStore
-    = MusicStore
-    { ms_name :: !T.Text
-    , ms_gitAndBassDepartment :: !GitAndBassDepartment
+data Appointment
+    = Appointment
+    { app_title :: !T.Text
+    , app_notification :: !Notification
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
-data GitAndBassDepartment
-    = GitAndBassDepartment
-    { gb_gitSubDepartment :: !GitDepartment
-    , gb_bassSubDepartment :: !BassDepartment
+data Notification
+    = Notification
+    { not_title :: !T.Text
+    , not_deliveredTo :: !MobileDevice
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
-data GitDepartment = GitDepartment
-    deriving (Eq, Show, Read, Generic, NFData)
-
-data BassDepartment
-    = BassDepartment
-    { bd_4string :: !Bass
-    , bd_5string :: !Bass5
+data MobileDevice
+    = MobileDevice
+    { md_brand :: !T.Text
+    , md_owner :: !Person
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
-data Bass5 = Bass5
-    deriving (Eq, Show, Read, Generic, NFData)
-
-data Bass
-    = Bass
-    { b_model :: !T.Text
-    , b_body :: !BassBody
+data Person
+    = Person
+    { p_name :: !T.Text
+    , p_guitar :: !Guitar
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
-data BassBody
-    = BassBody
-    { bb_color :: !T.Text
-    , bb_electronics :: !BassElectronics
+data Address
+    = Address
+    { addr_city :: !T.Text
+    , addr_zipCode :: !T.Text
+    , addr_street :: !T.Text
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
-data BassElectronics
-    = BassElectronics
-    { be_inputJack :: !InputJack
-    , be_frontPickup :: !Pickup
-    , be_middlePickup :: !Pickup
-    , be_rearPickup :: !Pickup
+data Guitar
+    = Guitar
+    { g_model :: !T.Text
+    , g_body :: !GuitarBody
+    }
+    deriving (Eq, Show, Read, Generic, NFData)
+
+data GuitarBody
+    = GuitarBody
+    { gb_color :: !T.Text
+    , gb_electronics :: !GuitarElectronics
+    }
+    deriving (Eq, Show, Read, Generic, NFData)
+
+data GuitarElectronics
+    = GuitarElectronics
+    { ge_inputJack :: !InputJack
+    , ge_frontPickup :: !Pickup
+    , ge_middlePickup :: !Pickup
+    , ge_rearPickup :: !Pickup
     }
     deriving (Eq, Show, Read, Generic, NFData)
 
@@ -75,12 +84,13 @@ data PickupCover
     deriving (Eq, Show, Read, Generic, NFData)
 
 $(makeLensesWith myLensRules ''PickupCover)
-$(makeLensesWith myLensRules ''BassElectronics)
-$(makeLensesWith myLensRules ''Bass)
-$(makeLensesWith myLensRules ''BassDepartment)
-$(makeLensesWith myLensRules ''GitDepartment)
-$(makeLensesWith myLensRules ''GitAndBassDepartment)
-$(makeLensesWith myLensRules ''MusicStore)
-$(makeLensesWith myLensRules ''BassBody)
+$(makeLensesWith myLensRules ''GuitarElectronics)
+$(makeLensesWith myLensRules ''Guitar)
+$(makeLensesWith myLensRules ''Address)
+$(makeLensesWith myLensRules ''Person)
+$(makeLensesWith myLensRules ''MobileDevice)
+$(makeLensesWith myLensRules ''Appointment)
+$(makeLensesWith myLensRules ''Notification)
+$(makeLensesWith myLensRules ''GuitarBody)
 $(makeLensesWith myLensRules ''Pickup)
 $(makeLensesWith myLensRules ''InputJack)

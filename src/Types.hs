@@ -12,11 +12,8 @@ import GHC.Generics
 data AllStores
     = AllStores
     { as_musicStore :: !MusicStore
-    , as_grocery :: !Grocery
+    , as_grocery :: !T.Text
     }
-    deriving (Eq, Show, Read, Generic, NFData)
-
-data Grocery = Grocery
     deriving (Eq, Show, Read, Generic, NFData)
 
 data MusicStore
@@ -39,7 +36,8 @@ data GitDepartment = GitDepartment
 
 data BassDepartment
     = BassDepartment
-    { bd_4string :: !Bass
+    { bd_name :: T.Text
+    , bd_4string :: !Bass
     , bd_5string :: !Bass5
     }
     deriving (Eq, Show, Read, Generic, NFData)

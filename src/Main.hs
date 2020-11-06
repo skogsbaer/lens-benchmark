@@ -20,7 +20,7 @@ colorOfPickupDirect pickup =
 sampleStores :: AllStores
 sampleStores =
     AllStores
-    { as_grocery = Grocery
+    { as_grocery = "Grocery"
     , as_musicStore =
         MusicStore
         { ms_name = "Thomann"
@@ -30,7 +30,8 @@ sampleStores =
             , gb_gitSubDepartment = GitDepartment
             , gb_bassSubDepartment =
                 BassDepartment
-                { bd_5string = Bass5
+                { bd_name = "private reserve"
+                , bd_5string = Bass5
                 , bd_4string =
                     Bass
                     { b_model = "Musicman Big Al"

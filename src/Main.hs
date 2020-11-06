@@ -17,6 +17,16 @@ colorOfPickupDirect pickup =
     pc_color . p_cover . pickup . bb_electronics . b_body . bd_4string .
     gb_bassSubDepartment . ms_gitAndBassDepartment . as_musicStore
 
+colorOfPickup' :: Lens' BassElectronics Pickup -> Lens' MusicStore T.Text
+colorOfPickup' pickupL =
+    ms_gitAndBassDepartmentL . gb_bassSubDepartmentL . bd_4stringL . b_bodyL .
+    bb_electronicsL . pickupL . p_coverL . pc_colorL
+
+colorOfPickupDirect' :: (BassElectronics -> Pickup) -> MusicStore -> T.Text
+colorOfPickupDirect' pickup =
+    pc_color . p_cover . pickup . bb_electronics . b_body . bd_4string .
+    gb_bassSubDepartment . ms_gitAndBassDepartment
+
 sampleStores :: AllStores
 sampleStores =
     AllStores
@@ -67,24 +77,45 @@ loadStores = do
   return x
 
 benchmarkGetLens :: AllStores -> [T.Text]
-benchmarkGetLens app =
-    [ app ^. (colorOfPickup be_frontPickupL)
-    , app ^. (colorOfPickup be_rearPickupL)
-    , app ^. (colorOfPickup be_middlePickupL)
+benchmarkGetLens x =
+    [ x ^. (colorOfPickup be_frontPickupL)
+    , x ^. (colorOfPickup be_rearPickupL)
+    , x ^. (colorOfPickup be_middlePickupL)
+    ]
+
+benchmarkGetLensSmall :: MusicStore -> [T.Text]
+benchmarkGetLensSmall x =
+    [ x ^. (colorOfPickup' be_frontPickupL)
+    , x ^. (colorOfPickup' be_rearPickupL)
+    , x ^. (colorOfPickup' be_middlePickupL)
     ]
 
 benchmarkSetLens :: AllStores -> ()
-benchmarkSetLens app =
-    (colorOfPickup be_frontPickupL .~ "value01") app `seq`
-    (colorOfPickup be_rearPickupL .~ "value02") app `seq`
-    (colorOfPickup be_middlePickupL .~ "value03") app `seq`
+benchmarkSetLens x =
+    (colorOfPickup be_frontPickupL .~ "value01") x `seq`
+    (colorOfPickup be_rearPickupL .~ "value02") x `seq`
+    (colorOfPickup be_middlePickupL .~ "value03") x `seq`
+    ()
+
+benchmarkSetLensSmall :: MusicStore -> ()
+benchmarkSetLensSmall x =
+    (colorOfPickup' be_frontPickupL .~ "value01") x `seq`
+    (colorOfPickup' be_rearPickupL .~ "value02") x `seq`
+    (colorOfPickup' be_middlePickupL .~ "value03") x `seq`
     ()
 
 benchmarkGetDirect :: AllStores -> [T.Text]
-benchmarkGetDirect app =
-    [ colorOfPickupDirect be_frontPickup app
-    , colorOfPickupDirect be_rearPickup app
-    , colorOfPickupDirect be_middlePickup app
+benchmarkGetDirect x =
+    [ colorOfPickupDirect be_frontPickup x
+    , colorOfPickupDirect be_rearPickup x
+    , colorOfPickupDirect be_middlePickup x
+    ]
+
+benchmarkGetDirectSmall :: MusicStore -> [T.Text]
+benchmarkGetDirectSmall x =
+    [ colorOfPickupDirect' be_frontPickup x
+    , colorOfPickupDirect' be_rearPickup x
+    , colorOfPickupDirect' be_middlePickup x
     ]
 
 setPickupColor ::
@@ -105,11 +136,35 @@ setPickupColor as getPickup setPickup color =
     f6 p = p { p_cover = f7 (p_cover p) }
     f7 pc = pc { pc_color = color }
 
+setPickupColor' ::
+    MusicStore
+    -> (BassElectronics -> Pickup)
+    -> (BassElectronics -> Pickup -> BassElectronics)
+    -> T.Text
+    -> MusicStore
+setPickupColor' as getPickup setPickup color = f0 as
+  where
+    f0 x = x { ms_gitAndBassDepartment = f1 (ms_gitAndBassDepartment x) }
+    f1 x = x { gb_bassSubDepartment = f2 (gb_bassSubDepartment x) }
+    f2 x = x { bd_4string = f3 (bd_4string x) }
+    f3 x = x { b_body = f4 (b_body x) }
+    f4 x = x { bb_electronics = f5 (bb_electronics x) }
+    f5 e = setPickup e (f6 (getPickup e))
+    f6 p = p { p_cover = f7 (p_cover p) }
+    f7 pc = pc { pc_color = color }
+
 benchmarkSetDirect :: AllStores -> ()
 benchmarkSetDirect x =
     setPickupColor x be_frontPickup (\e p -> e { be_frontPickup = p }) "value01" `seq`
     setPickupColor x be_rearPickup (\e p -> e { be_rearPickup = p }) "value02" `seq`
     setPickupColor x be_middlePickup (\e p -> e { be_middlePickup = p }) "value03" `seq`
+    ()
+
+benchmarkSetDirectSmall :: MusicStore -> ()
+benchmarkSetDirectSmall x =
+    setPickupColor' x be_frontPickup (\e p -> e { be_frontPickup = p }) "value01" `seq`
+    setPickupColor' x be_rearPickup (\e p -> e { be_rearPickup = p }) "value02" `seq`
+    setPickupColor' x be_middlePickup (\e p -> e { be_middlePickup = p }) "value03" `seq`
     ()
 
 main :: IO ()
@@ -124,5 +179,10 @@ main = do
                , bench "setLens" (nf benchmarkSetLens x)
                , bench "getDirect" (nf benchmarkGetDirect x)
                , bench "setDirect" (nf benchmarkSetDirect x)
+
+               , bench "getLensSmall" (nf benchmarkGetLensSmall (as_musicStore x))
+               , bench "setLensSmall" (nf benchmarkSetLensSmall (as_musicStore x))
+               , bench "getDirectSmall" (nf benchmarkGetDirectSmall (as_musicStore x))
+               , bench "setDirectSmall" (nf benchmarkSetDirectSmall (as_musicStore x))
                ]
       ]

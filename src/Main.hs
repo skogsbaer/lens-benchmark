@@ -84,12 +84,12 @@ benchmarkGetLens x =
     (x ^. (colorOfPickup be_middlePickupL)) `seq`
     ()
 
-benchmarkGetLensSmall :: MusicStore -> [T.Text]
+benchmarkGetLensSmall :: MusicStore -> ()
 benchmarkGetLensSmall x =
-    [ x ^. (colorOfPickup' be_frontPickupL)
-    , x ^. (colorOfPickup' be_rearPickupL)
-    , x ^. (colorOfPickup' be_middlePickupL)
-    ]
+    (x ^. (colorOfPickup' be_frontPickupL)) `seq`
+    (x ^. (colorOfPickup' be_rearPickupL)) `seq`
+    (x ^. (colorOfPickup' be_middlePickupL)) `seq`
+    ()
 
 benchmarkSetLens :: AllStores -> ()
 benchmarkSetLens x =
@@ -100,9 +100,9 @@ benchmarkSetLens x =
 
 benchmarkSetLensSmall :: MusicStore -> ()
 benchmarkSetLensSmall x =
-    (colorOfPickup' be_frontPickupL .~ "value01") x `seq`
-    (colorOfPickup' be_rearPickupL .~ "value02") x `seq`
-    (colorOfPickup' be_middlePickupL .~ "value03") x `seq`
+    (colorOfPickup' be_frontPickupL .~ "value01") x `deepseq`
+    (colorOfPickup' be_rearPickupL .~ "value02") x `deepseq`
+    (colorOfPickup' be_middlePickupL .~ "value03") x `deepseq`
     ()
 
 benchmarkGetDirect :: AllStores -> ()
@@ -113,12 +113,12 @@ benchmarkGetDirect x =
     ()
 
 
-benchmarkGetDirectSmall :: MusicStore -> [T.Text]
+benchmarkGetDirectSmall :: MusicStore -> ()
 benchmarkGetDirectSmall x =
-    [ colorOfPickupDirect' be_frontPickup x
-    , colorOfPickupDirect' be_rearPickup x
-    , colorOfPickupDirect' be_middlePickup x
-    ]
+    colorOfPickupDirect' be_frontPickup x `seq`
+    colorOfPickupDirect' be_rearPickup x `seq`
+    colorOfPickupDirect' be_middlePickup x `seq`
+    ()
 
 setPickupColor ::
     AllStores
@@ -164,9 +164,9 @@ benchmarkSetDirect x =
 
 benchmarkSetDirectSmall :: MusicStore -> ()
 benchmarkSetDirectSmall x =
-    setPickupColor' x be_frontPickup (\e p -> e { be_frontPickup = p }) "value01" `seq`
-    setPickupColor' x be_rearPickup (\e p -> e { be_rearPickup = p }) "value02" `seq`
-    setPickupColor' x be_middlePickup (\e p -> e { be_middlePickup = p }) "value03" `seq`
+    setPickupColor' x be_frontPickup (\e p -> e { be_frontPickup = p }) "value01" `deepseq`
+    setPickupColor' x be_rearPickup (\e p -> e { be_rearPickup = p }) "value02" `deepseq`
+    setPickupColor' x be_middlePickup (\e p -> e { be_middlePickup = p }) "value03" `deepseq`
     ()
 
 main :: IO ()
@@ -178,13 +178,12 @@ main = do
            bgroup "main"
                [
                  bench "getLens" (nf benchmarkGetLens x)
+               , bench "getLensSmall" (nf benchmarkGetLensSmall (as_musicStore x))
                , bench "getDirect" (nf benchmarkGetDirect x)
+               , bench "getDirectSmall" (nf benchmarkGetDirectSmall (as_musicStore x))
                , bench "setLens" (nf benchmarkSetLens x)
-                , bench "setDirect" (nf benchmarkSetDirect x)
---
---                , bench "getLensSmall" (nf benchmarkGetLensSmall (as_musicStore x))
---                , bench "setLensSmall" (nf benchmarkSetLensSmall (as_musicStore x))
---                , bench "getDirectSmall" (nf benchmarkGetDirectSmall (as_musicStore x))
---                , bench "setDirectSmall" (nf benchmarkSetDirectSmall (as_musicStore x))
+               , bench "setLensSmall" (nf benchmarkSetLensSmall (as_musicStore x))
+               , bench "setDirect" (nf benchmarkSetDirect x)
+               , bench "setDirectSmall" (nf benchmarkSetDirectSmall (as_musicStore x))
                ]
       ]

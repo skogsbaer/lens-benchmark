@@ -1,0 +1,113 @@
+* 89a06ec34db3f29a9c7e52a75a422950ea5de25d (2020-11-21T07:36)
+** with lazy types
+benchmarking main/getLens
+time                 68.80 ns   (67.11 ns .. 71.52 ns)
+                     0.993 R²   (0.990 R² .. 0.996 R²)
+mean                 71.85 ns   (70.32 ns .. 73.62 ns)
+std dev              6.223 ns   (5.086 ns .. 8.101 ns)
+variance introduced by outliers: 88% (severely inflated)
+
+benchmarking main/getLensSmall
+time                 61.23 ns   (58.99 ns .. 63.34 ns)
+                     0.991 R²   (0.988 R² .. 0.995 R²)
+mean                 61.24 ns   (59.80 ns .. 63.48 ns)
+std dev              6.426 ns   (5.230 ns .. 7.647 ns)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking main/getDirect
+time                 40.10 ns   (39.29 ns .. 41.07 ns)
+                     0.996 R²   (0.994 R² .. 0.997 R²)
+mean                 40.16 ns   (39.47 ns .. 41.07 ns)
+std dev              2.812 ns   (2.379 ns .. 3.473 ns)
+variance introduced by outliers: 84% (severely inflated)
+
+benchmarking main/getDirectSmall
+time                 39.77 ns   (38.76 ns .. 40.68 ns)
+                     0.997 R²   (0.996 R² .. 0.998 R²)
+mean                 39.40 ns   (38.68 ns .. 40.18 ns)
+std dev              2.518 ns   (2.021 ns .. 3.430 ns)
+variance introduced by outliers: 81% (severely inflated)
+
+benchmarking main/setLens
+time                 186.1 ns   (169.6 ns .. 200.9 ns)
+                     0.971 R²   (0.963 R² .. 0.988 R²)
+mean                 170.7 ns   (165.2 ns .. 179.3 ns)
+std dev              24.76 ns   (19.69 ns .. 32.19 ns)
+variance introduced by outliers: 95% (severely inflated)
+
+benchmarking main/setLensSmall
+time                 147.2 ns   (142.1 ns .. 153.0 ns)
+                     0.989 R²   (0.985 R² .. 0.994 R²)
+mean                 151.7 ns   (145.6 ns .. 162.9 ns)
+std dev              22.95 ns   (16.65 ns .. 37.08 ns)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking main/setDirect
+time                 91.55 ns   (88.54 ns .. 94.93 ns)
+                     0.987 R²   (0.981 R² .. 0.994 R²)
+mean                 90.08 ns   (86.56 ns .. 95.07 ns)
+std dev              12.73 ns   (10.43 ns .. 15.63 ns)
+variance introduced by outliers: 95% (severely inflated)
+
+benchmarking main/setDirectSmall
+time                 79.45 ns   (76.33 ns .. 83.61 ns)
+                     0.984 R²   (0.975 R² .. 0.991 R²)
+mean                 85.18 ns   (81.17 ns .. 89.18 ns)
+std dev              12.70 ns   (9.222 ns .. 18.49 ns)
+variance introduced by outliers: 96% (severely inflated)
+** with strict types
+benchmarking main/getLens
+time                 74.93 ns   (71.83 ns .. 77.19 ns)
+                     0.992 R²   (0.989 R² .. 0.996 R²)
+mean                 72.67 ns   (70.58 ns .. 74.96 ns)
+std dev              7.566 ns   (6.593 ns .. 9.528 ns)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking main/getLensSmall
+time                 64.75 ns   (63.49 ns .. 66.68 ns)
+                     0.995 R²   (0.992 R² .. 0.997 R²)
+mean                 63.55 ns   (62.24 ns .. 65.00 ns)
+std dev              5.323 ns   (4.348 ns .. 6.946 ns)
+variance introduced by outliers: 88% (severely inflated)
+
+benchmarking main/getDirect
+time                 38.11 ns   (36.97 ns .. 38.96 ns)
+                     0.996 R²   (0.994 R² .. 0.997 R²)
+mean                 37.41 ns   (36.80 ns .. 38.06 ns)
+std dev              2.597 ns   (2.365 ns .. 2.981 ns)
+variance introduced by outliers: 83% (severely inflated)
+
+benchmarking main/getDirectSmall
+time                 34.71 ns   (33.80 ns .. 35.57 ns)
+                     0.995 R²   (0.993 R² .. 0.998 R²)
+mean                 35.04 ns   (34.38 ns .. 35.79 ns)
+std dev              2.396 ns   (1.943 ns .. 2.738 ns)
+variance introduced by outliers: 83% (severely inflated)
+
+benchmarking main/setLens
+time                 162.5 ns   (158.2 ns .. 167.4 ns)
+                     0.993 R²   (0.991 R² .. 0.996 R²)
+mean                 165.3 ns   (161.7 ns .. 169.4 ns)
+std dev              14.82 ns   (12.94 ns .. 17.56 ns)
+variance introduced by outliers: 88% (severely inflated)
+
+benchmarking main/setLensSmall
+time                 140.5 ns   (135.9 ns .. 145.6 ns)
+                     0.993 R²   (0.990 R² .. 0.996 R²)
+mean                 144.6 ns   (141.2 ns .. 148.8 ns)
+std dev              13.28 ns   (10.60 ns .. 15.68 ns)
+variance introduced by outliers: 89% (severely inflated)
+
+benchmarking main/setDirect
+time                 95.86 ns   (91.84 ns .. 99.76 ns)
+                     0.987 R²   (0.981 R² .. 0.994 R²)
+mean                 98.00 ns   (95.01 ns .. 102.4 ns)
+std dev              13.12 ns   (10.62 ns .. 17.66 ns)
+variance introduced by outliers: 95% (severely inflated)
+
+benchmarking main/setDirectSmall
+time                 93.48 ns   (90.01 ns .. 96.99 ns)
+                     0.991 R²   (0.988 R² .. 0.995 R²)
+mean                 95.51 ns   (92.75 ns .. 98.29 ns)
+std dev              9.938 ns   (8.254 ns .. 12.85 ns)
+variance introduced by outliers: 91% (severely inflated)

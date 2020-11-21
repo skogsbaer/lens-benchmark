@@ -17,6 +17,7 @@ ghc-options:
   - -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind
   - -fwarn-missing-signatures -fno-warn-partial-type-signatures
   - -Wredundant-constraints -rtsopts -fno-warn-unused-top-binds
+  - -ddump-simpl -ddump-to-file
 
 default-extensions:
   - ScopedTypeVariables
@@ -38,3 +39,4 @@ executables:
     - text
     - template-haskell
     - deepseq
+    - random

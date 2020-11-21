@@ -227,13 +227,13 @@ main = do
            bgroup "main"
                [
                 bench "getLens" (nf (benchmarkGetLens l1 l2 l3) x)
-               , bench "getLensSmall" (nf (benchmarkGetLensSmall l1 l2 l3) (as_musicStore x))
                , bench "getDirect" (nf (benchmarkGetDirect g1 g2 g3) x)
+               , bench "getLensSmall" (nf (benchmarkGetLensSmall l1 l2 l3) (as_musicStore x))
                , bench "getDirectSmall"
                      (nf (benchmarkGetDirectSmall g1 g2 g3) (as_musicStore x))
                , bench "setLens" (nf (benchmarkSetLens l1 l2 l3) x)
-               , bench "setLensSmall" (nf (benchmarkSetLensSmall l1 l2 l3) (as_musicStore x))
                , bench "setDirect" (nf (benchmarkSetDirect g1 s1 g2 s2 g3 s3) x)
+               , bench "setLensSmall" (nf (benchmarkSetLensSmall l1 l2 l3) (as_musicStore x))
                , bench "setDirectSmall"
                      (nf (benchmarkSetDirectSmall g1 s1 g2 s2 g3 s3) (as_musicStore x))
                ]
